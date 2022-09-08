@@ -1,0 +1,51 @@
+float $size = 10;
+float $topRadius = $size;
+float $midRadius = $topRadius * 1.3;
+float $botRadius = $midRadius * 1.5;
+float $buttonRadius = $topRadius * .1;
+
+float $topYTranslation = ($topRadius + (($midRadius * 2) + ($botRadius * 2))) - $size;
+float $midYTranslation = ($midRadius + ($botRadius * 2)) - ($size * .6);
+float $botYTranslation = $botRadius;
+
+float $topButtonYTranslation = ($midYTranslation + ($midRadius * .5));
+float $topButtonXTranslation = ($midRadius* .9);
+float $midButtonYTranslation = ($midYTranslation);
+float $midButtonXTranslation = ($midRadius);
+float $botButtonYTranslation = ($midYTranslation - ($midRadius * .5));
+float $botButtonXTranslation = ($midRadius * .9);
+
+/*
+string $obj[];
+$obj = `polyShpere`;
+*/
+
+polySphere -name "TopSnowman" -r $topRadius -sx 20 -sy 20 -ax 0 1 0 -cuv 2 -ch 1;
+move -r -os -wd 0 $topYTranslation 0 ;
+
+polySphere -name "MidSnowman" -r $midRadius -sx 20 -sy 20 -ax 0 1 0 -cuv 2 -ch 1;
+move -r -os -wd 0 $midYTranslation 0;
+
+polySphere -name "BotSnowman" -r $botRadius -sx 20 -sy 20 -ax 0 1 0 -cuv 2 -ch 1;
+move -r -os -wd 0 $botYTranslation 0;
+
+polySphere -name "TopButton" -r $buttonRadius -sx 20 -sy 20 -ax 0 1 0 -cuv 2 -ch 1;
+move -r -os -wd $topButtonXTranslation $topButtonYTranslation 0;
+
+polySphere -name "MidButton" -r $buttonRadius -sx 20 -sy 20 -ax 0 1 0 -cuv 2 -ch 1;
+move -r -os -wd $midButtonXTranslation $midButtonYTranslation 0;
+
+polySphere -name "BotButton" -r $buttonRadius -sx 20 -sy 20 -ax 0 1 0 -cuv 2 -ch 1;
+move -r -os -wd $botButtonXTranslation $botButtonYTranslation 0;
+
+
+
+/*
+string $basket[] = {"orange","pear","kiwi","apple","banana"};
+
+int $index;
+
+//counts the number of elements in the array
+$index = `rand (size($basket))`;
+print ($basket[$index]);
+*/

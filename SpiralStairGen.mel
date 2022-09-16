@@ -1,15 +1,16 @@
 {
-
-
-    //StepCreation(         2,       .35,              5,                 1.5               1.5
-    proc StepCreation(int $numSteps, float $stepHeight, float $stepWidth, float $stepDepth, float $supportRadius )
+    //StepCreation(        16,                      .35,                     5,                  1.5                     1.5                          .0625
+    proc StairGenerator(/*1*/float $numSteps, /*2*/float $stepHeight, /*3*/float $stepWidth, /*4*/float $stepDepth, /*5*/float $supportRadius, /*6*/float $stepRotationPercent)
     {
-        float $initialTrans = (($stepWidth/2) + ($supportRadius * 0.9)); 
+        float $initialPoleTranslation = $stepWidth / -2;        
+        float $ceilingHeight = (($stepHeight * 2) * ($numSteps + 2));
+        float $initialPoleYTrans = $ceilingHeight / 2;
 
         float $leftXPivot = ((-1) * ($stepWidth/2));
         float $topYPivot = ($stepHeight/2);
 
-        polyCylinder -r $supportRadius -h 2 -sx 20 -sy 1 -sz 1 -ax 0 1 0 -rcp 0 -cuv 3 -ch 1;
+        polyCylinder -r $supportRadius -h $ceilingHeight -sx 20 -sy 1 -sz 1 -ax 0 1 0 -rcp 0 -cuv 3 -ch 1;
+        move -r -os  $initialPoleTranslation $initialPoleYTrans 0;
 
         for ($i = 0; $i < $numSteps; $i++)
         {
@@ -17,46 +18,62 @@
             {
                 polyCube -w $stepWidth -h $stepHeight -d $stepDepth -sx 1 -sy 1 -sz 1 -ax 0 1 0 -cuv 4 -ch 1;
                 xform -rp $leftXPivot $topYPivot 0;
-                move -r -os  $initialTrans $stepHeight 0;
+                move -r -os  $supportRadius $stepHeight 0;
             }
             else
             {
-                float $stepYRot = (360 * (.125 * $i));
-                float $stepYTrans = $stepHeight * 2;
+                float $stepYRotate = (360 * ($stepRotationPercent * $i));
+                float $stepYTranslation = (($stepHeight * 2) * ($i + 1));
 
                 polyCube -w $stepWidth -h $stepHeight -d $stepDepth -sx 1 -sy 1 -sz 1 -ax 0 1 0 -cuv 4 -ch 1;
                 xform -rp $leftXPivot $topYPivot 0;
-                rotate -r -os -fo 0 $stepYRot 0;
-                move -r -os  $initialTrans $stepYTrans 0;
+                rotate -r -os -fo 0 $stepYRotate 0;
+                move -r -os  $supportRadius $stepYTranslation 0;
             }
         }
     }
-
-    StepCreation(8, .350, 5, 1.5, 1.5);
+    StairGenerator(/*1*/17, /*2*/.35, /*3*/5, /*4*/1.5, /*5*/1.5, /*6*/.0625);
 }
+/*{
+    //StepCreation(        8,                      .35,                     5,                  1.5                     1.5                           .0625                           0                           0
+    proc StairGenerator(float $ceilingHeight, float $stepHeight, float $stepWidth, float $stepDepth, float $supportRadius, float $stepRotationPercent, float $heightReached, float $numSteps)
+    {
+        float $supportHeight = ($ceilingHeight + ($stepHeight * 6));
+        float $initialPoleTranslation = $stepWidth / -2;
+        float $stepGrowth = ($stepHeight * 2);
 
-duplicate -smartTransform;
+        float $leftXPivot = ((-1) * ($stepWidth/2));
+        float $topYPivot = ($stepHeight/2);
 
+        polyCylinder -r $supportRadius -h $supportHeight -sx 20 -sy 1 -sz 1 -ax 0 1 0 -rcp 0 -cuv 3 -ch 1;
+        move -r -os  $initialPoleTranslation 0 0;
 
-float $stepWidth = 5;
-float $stepHeight = .350;
-float $stepDepth = 1.5;
-float $supportRadius = 1.5;
-float $initialTrans = (($stepWidth/2) + ($supportRadius * 0.9)); 
-float $stepYTrans = ($stepHeight * 2);
-float $leftXPivot = ((-1) * ($stepWidth/2));
-float $topYPivot = ($stepHeight/2);
-float $stepYRot = (360 * .125);
+        do
+        {           
+            float $heightReached = (($stepHeight * ($numSteps + 1)) + $stepGrowth);   
 
-polyCube -w $stepWidth -h $stepHeight -d $stepDepth -sx 1 -sy 1 -sz 1 -ax 0 1 0 -cuv 4 -ch 1;
+            if($numSteps == 0)
+            {
+                polyCube -w $stepWidth -h $stepHeight -d $stepDepth -sx 1 -sy 1 -sz 1 -ax 0 1 0 -cuv 4 -ch 1;
+                xform -rp $leftXPivot $topYPivot 0;
+                move -r -os  $supportRadius $stepHeight 0;
 
-xform -rp $leftXPivot $topYPivot 0;
-rotate -r -os -fo 0 $stepYRot 0;
+                $numSteps++;
+            }
+            else
+            {
+                float $stepYRotate = (360 * ($stepRotationPercent * $numSteps));
+                float $stepYTranslation = (($stepHeight * 2) * ($numSteps + 1));
 
-move -r -os  $initialTrans 0 0;
-
-move -r -os  $stepXZTrans 0 0;
-move -r -os  0 0 $stepXZTrans;
-move -r -os  $stepXZTrans 0 0;
-
-move -r -os  0 $stepHeight 0;
+                polyCube -w $stepWidth -h $stepHeight -d $stepDepth -sx 1 -sy 1 -sz 1 -ax 0 1 0 -cuv 4 -ch 1;
+                xform -rp $leftXPivot $topYPivot 0;
+                rotate -r -os -fo 0 $stepYRotate 0;
+                move -r -os  $supportRadius $stepYTranslation 0;
+                $numSteps++;             
+            }
+        }
+        while($ceilingHeight > $heightReached);
+        print($numSteps);
+    }
+    StairGenerator(8, .35, 5, 1.5, 1.5, .0625, 0, 0);
+}*/

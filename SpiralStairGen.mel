@@ -1,0 +1,62 @@
+{
+
+
+    //StepCreation(         2,       .35,              5,                 1.5               1.5
+    proc StepCreation(int $numSteps, float $stepHeight, float $stepWidth, float $stepDepth, float $supportRadius )
+    {
+        float $initialTrans = (($stepWidth/2) + ($supportRadius * 0.9)); 
+
+        float $leftXPivot = ((-1) * ($stepWidth/2));
+        float $topYPivot = ($stepHeight/2);
+
+        polyCylinder -r $supportRadius -h 2 -sx 20 -sy 1 -sz 1 -ax 0 1 0 -rcp 0 -cuv 3 -ch 1;
+
+        for ($i = 0; $i < $numSteps; $i++)
+        {
+            if($i == 0)
+            {
+                polyCube -w $stepWidth -h $stepHeight -d $stepDepth -sx 1 -sy 1 -sz 1 -ax 0 1 0 -cuv 4 -ch 1;
+                xform -rp $leftXPivot $topYPivot 0;
+                move -r -os  $initialTrans $stepHeight 0;
+            }
+            else
+            {
+                float $stepYRot = (360 * (.125 * $i));
+                float $stepYTrans = $stepHeight * 2;
+
+                polyCube -w $stepWidth -h $stepHeight -d $stepDepth -sx 1 -sy 1 -sz 1 -ax 0 1 0 -cuv 4 -ch 1;
+                xform -rp $leftXPivot $topYPivot 0;
+                rotate -r -os -fo 0 $stepYRot 0;
+                move -r -os  $initialTrans $stepYTrans 0;
+            }
+        }
+    }
+
+    StepCreation(8, .350, 5, 1.5, 1.5);
+}
+
+duplicate -smartTransform;
+
+
+float $stepWidth = 5;
+float $stepHeight = .350;
+float $stepDepth = 1.5;
+float $supportRadius = 1.5;
+float $initialTrans = (($stepWidth/2) + ($supportRadius * 0.9)); 
+float $stepYTrans = ($stepHeight * 2);
+float $leftXPivot = ((-1) * ($stepWidth/2));
+float $topYPivot = ($stepHeight/2);
+float $stepYRot = (360 * .125);
+
+polyCube -w $stepWidth -h $stepHeight -d $stepDepth -sx 1 -sy 1 -sz 1 -ax 0 1 0 -cuv 4 -ch 1;
+
+xform -rp $leftXPivot $topYPivot 0;
+rotate -r -os -fo 0 $stepYRot 0;
+
+move -r -os  $initialTrans 0 0;
+
+move -r -os  $stepXZTrans 0 0;
+move -r -os  0 0 $stepXZTrans;
+move -r -os  $stepXZTrans 0 0;
+
+move -r -os  0 $stepHeight 0;

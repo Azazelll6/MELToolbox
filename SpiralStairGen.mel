@@ -27,14 +27,15 @@
 
                 polyCube -w $stepWidth -h $stepHeight -d $stepDepth -sx 1 -sy 1 -sz 1 -ax 0 1 0 -cuv 4 -ch 1;
                 xform -rp $leftXPivot $topYPivot 0;
-                rotate -r -os -forceOrder 0 $stepYRotate 0;
+                rotate -r -os -fo 0 $stepYRotate 0;
                 move -r -os  $supportRadius $stepYTranslation 0;
             }
         }
     }
-    StairGenerator(/*1*/10, /*2*/.35, /*3*/5, /*4*/1.5, /*5*/1.5, /*6*/.0625);
+    StairGenerator(/*1*/38, /*2*/.35, /*3*/5, /*4*/1.5, /*5*/1.5, /*6*/.0625);
 }
-/*{
+/*
+{
     //StepCreation(        8,                      .35,                     5,                  1.5                     1.5                           .0625                           0                           0
     proc StairGenerator(float $ceilingHeight, float $stepHeight, float $stepWidth, float $stepDepth, float $supportRadius, float $stepRotationPercent, float $heightReached, float $numSteps)
     {
@@ -76,26 +77,8 @@
         print($numSteps);
     }
     StairGenerator(8, .35, 5, 1.5, 1.5, .0625, 0, 0);
-}*/
-// Create a function that generates geometry for a spiral staircase based on user input (arguments).
-
-/* Number of stairs to be created
-* Stair depth --> int $stairDepth
-* Stair width --> int $stairWidth
-* Stair height --> int $stairHeight
-* Initial step --> int $step
-* Stair amount --> int $stepAmount
-* Stair pivot point or offset --> use xform
-* Step height --> $riser
-* Step rotation --> $rotation
+}
 */
-
-// Step 1: Create the stair
-// Step 2: Move the pivot point
-// Step 3: Translate and rotate around a central point.
-// Bonus: Create a center pole for the steps to "stick" to
-
-
 /* Clayton's answer to everyone's questions
 {
     //global lets us sets a global variable that can then be called from any function

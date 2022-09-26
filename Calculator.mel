@@ -1,0 +1,153 @@
+global proc float Add(float $values[])
+{
+    float $sum = 0;
+
+    for ($i=0; $i < (size($values)); $i++)
+    {
+        $sum += $values[$i];
+    }
+    return $sum;
+}
+// For testing
+//print `Add({4, 3, 2, 1})`;
+
+global proc float Subtract(float $values[])
+{
+    float $difference = $values[0];
+
+    for ($i=1; $i < (size($values)); $i++)
+    {
+        $difference -= $values[$i];
+    }
+    return $difference;       
+}
+// For testing
+//print `Subtract({4, 3})`;
+
+global proc float Multiply(float $values[])
+{
+    float $product = 1;
+
+    for ($i=0; $i < (size($values)); $i++)
+    {
+        $product *= $values[$i];
+    }
+    return $product;
+}
+// For testing
+//print `Multiply({4, 3, 2, 1})`;
+
+global proc float Divide(float $values[])
+{
+    float $qoitient = $values[0];
+
+    for ($i=1; $i < (size($values)); $i++)
+    {
+        $qoitient /= $values[$i];
+    }
+    return $qoitient;
+}
+// For testing
+//print `Divide({4, 3, 2, 1})`;
+
+global proc float Power(float $values[])
+{
+    $base = $values[0];
+    $exponent = $values[1];
+
+    if (size($values) == 2)
+    {
+        return pow($base, $exponent);
+    }
+}
+// For testing
+//print `Power({4, 3, 2, 1})`;
+
+global proc float Mean(float $values[])
+{
+    $sum = Add($values);
+    
+    $mean = $sum / size($values);
+
+    return $mean;
+}
+// For testing
+//print `Mean({4, 3, 2, 1})`;
+
+global proc float Median(float $values[])
+{
+    $values = sort ($values);
+    $remainder = (size($values)) % 2;
+    int $middleNumOnOdd = (size($values)) / 2;
+    int $num1OnEven = (size($values)) / 2;
+    int $num2OnEven = ((size($values)) / 2) - 1;
+    int $middleNumOnEven = ($num1OnEven + $num2OnEven) / 2;
+
+    if ($remainder != 0)
+    {
+        return $values[$middleNumOnOdd];
+    }
+    else
+    {
+        return $values[$middleNumOnEven];
+    }
+}
+// For testing
+//print `Median({4, 3, 2, 1})`;
+
+
+global proc Calculate(float $input[], int $operation)
+{
+    if ($operation == 1)
+    {
+        print(floatArrayToString($input, " + ") + " = " + Add($input) + "\n");
+    }   
+    else if ($operation == 2)
+    {
+        print(floatArrayToString($input, " - ") + " = " + Subtract($input) + "\n");
+    }
+    else if ($operation == 3)
+    {
+        print(floatArrayToString($input, " * ") + " = " + Multiply($input) + "\n");
+    }
+    else if ($operation == 4)
+    {
+        print(floatArrayToString($input, " / ") + " = " + Divide($input) + "\n");
+    }
+    else if ($operation == 5)
+    {
+        if (size($input) == 2)
+        {
+        print(floatArrayToString($input, "^") + " = " + Power($input) + "\n");
+        }
+        
+        else
+        {
+        print ("Error: Incorrect number of inputs provided. Please provide an input of only 2 numbers...\n");
+        }
+    }
+    else if ($operation == 6)
+    {
+        print("The mean of " + floatArrayToString($input, ", ") + " = " + Mean($input) + "\n");
+    }
+    else if ($operation == 7)
+    {
+        print("The median of " + floatArrayToString($input, ", ") + " = " + Median($input) + "\n");
+    }
+    else
+    {
+        print("Please provide valid values and choose an operation from 1-7 in the format Calculate({#,#,#,etc}, #)...\n");
+    }
+}
+
+/* Enter inputs as Calculate({#,#,#,etc},operation)
+Operations =
+    1-Addition
+    2-Subtraction
+    3-Muiltiplcation
+    4-Division
+    5-Power of (exponents)
+    6-Finding the mean
+    7-Finding the median
+*/
+Calculate({50,54,32,64,11}, 7);

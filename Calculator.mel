@@ -8,8 +8,6 @@ global proc float Add(float $values[])
     }
     return $sum;
 }
-// For testing
-//print `Add({4, 3, 2, 1})`;
 
 global proc float Subtract(float $values[])
 {
@@ -21,8 +19,6 @@ global proc float Subtract(float $values[])
     }
     return $difference;       
 }
-// For testing
-//print `Subtract({4, 3})`;
 
 global proc float Multiply(float $values[])
 {
@@ -34,8 +30,6 @@ global proc float Multiply(float $values[])
     }
     return $product;
 }
-// For testing
-//print `Multiply({4, 3, 2, 1})`;
 
 global proc float Divide(float $values[])
 {
@@ -47,8 +41,6 @@ global proc float Divide(float $values[])
     }
     return $qoitient;
 }
-// For testing
-//print `Divide({4, 3, 2, 1})`;
 
 global proc float Power(float $values[])
 {
@@ -60,8 +52,6 @@ global proc float Power(float $values[])
         return pow($base, $exponent);
     }
 }
-// For testing
-//print `Power({4, 3, 2, 1})`;
 
 global proc float Mean(float $values[])
 {
@@ -71,8 +61,6 @@ global proc float Mean(float $values[])
 
     return $mean;
 }
-// For testing
-//print `Mean({4, 3, 2, 1})`;
 
 global proc float Median(float $values[])
 {
@@ -92,70 +80,53 @@ global proc float Median(float $values[])
         return $values[$middleNumOnEven];
     }
 }
-// For testing
-//print `Median({4, 3, 2, 1})`;
 
-
-global proc Calculate(float $input[], int $operation)
+global proc string Calculate(float $input[], string $operation)
 {
-    if ($operation == 1)
+    if ($operation == "Addition")
     {
-        print(floatArrayToString($input, " + ") + " = " + Add($input) + "\n");
+        return (floatArrayToString($input, " + ") + " = " + Add($input) + "\n");
     }   
-    else if ($operation == 2)
+    else if ($operation == "Subtraction")
     {
-        print(floatArrayToString($input, " - ") + " = " + Subtract($input) + "\n");
+        return (floatArrayToString($input, " - ") + " = " + Subtract($input) + "\n");
     }
-    else if ($operation == 3)
+    else if ($operation == "Multiplication")
     {
-        print(floatArrayToString($input, " * ") + " = " + Multiply($input) + "\n");
+        return (floatArrayToString($input, " * ") + " = " + Multiply($input) + "\n");
     }
-    else if ($operation == 4)
+    else if ($operation == "Division")
     {
-        print(floatArrayToString($input, " / ") + " = " + Divide($input) + "\n");
+        return (floatArrayToString($input, " / ") + " = " + Divide($input) + "\n");
     }
-    else if ($operation == 5)
+    else if ($operation == "Exponent")
     {
         if (size($input) == 2)
         {
-        print(floatArrayToString($input, "^") + " = " + Power($input) + "\n");
+        return (floatArrayToString($input, "^") + " = " + Power($input) + "\n");
         }
         
         else
         {
-        print ("Error: Incorrect number of inputs provided. Please provide an input of only 2 numbers...\n");
+        return  ("Error: Incorrect number of inputs provided. Please provide an input of only 2 numbers...\n");
         }
     }
-    else if ($operation == 6)
+    else if ($operation == "Mean")
     {
-        print("The mean of " + floatArrayToString($input, ", ") + " = " + Mean($input) + "\n");
+        return ("The mean of " + floatArrayToString($input, ", ") + " = " + Mean($input) + "\n");
     }
-    else if ($operation == 7)
+    else if ($operation == "Median")
     {
-        print("The median of " + floatArrayToString($input, ", ") + " = " + Median($input) + "\n");
+        return ("The median of " + floatArrayToString($input, ", ") + " = " + Median($input) + "\n");
     }
     else
     {
-        print("Please provide valid values and choose an operation from 1-7 in the format Calculate({#,#,#,etc}, #)...\n");
+        return ("Please provide valid values and choose an operation from 1-7 in the format Calculate({#,#,#,etc}, #)...\n");
     }
 }
 
-/* Enter inputs as Calculate({#,#,#,etc},operation)
-Operations =
-    1-Addition
-    2-Subtraction
-    3-Muiltiplcation
-    4-Division
-    5-Power of (exponents)
-    6-Finding the mean
-    7-Finding the median
-*/
-//Calculate({50,54,32,64,11}, 7);
-
-
 global proc AddToArray(float $num)
 {
-    print ($num + "\n");
     global float $array[];
     string $listInput = $num;
 
@@ -191,7 +162,14 @@ global proc Clear_ButtonCmd()
 
 global proc Calculate_ButtonCmd()
 {
+    global float $array[];
+    string $opMenu = `optionVar -q "opMenu"`;
+    string $resultField = `optionVar -q "opResult"`;
+    
+    string $opSelected = `optionMenu -q -value $opMenu`;
 
+    string $result = Calculate($array, $opSelected);
+    textField -e -text $result $resultField;
 }
 
 global proc CalculatorUI()
@@ -202,39 +180,26 @@ global proc CalculatorUI()
     global float $array[];
     clear $array;
 
-    float $createdArray = `optionVar -floatArray "userInputs"`;
     $uiWindow = `window -title "Calulator"
                         -widthHeight 300 400
                         -resizeToFitChildren 1
                         $uiWindow`;
     string $firstColumn = `columnLayout -parent $uiWindow -adjustableColumn 1`;
-        string $menu = `optionMenu -label "Operation: " -parent $firstColumn -width 200`;
-            menuItem -l "Addition" -p $menu -command "Add";
-            menuItem -l "Subtraction" -p $menu;
-            menuItem -l "Multiplication" -p $menu;
-            menuItem -l "Division" -p $menu;
-            menuItem -l "Exponent" -p $menu;
-            menuItem -l "Mean" -p $menu;
-            menuItem -l "Median" -p $menu;
+        optionVar -stringValue "opMenu" `optionMenu -label "Operation: " -parent $firstColumn -width 200`;
+            optionVar -stringValue "opAddMItem" `menuItem -l "Addition"`;
+            menuItem -l "Subtraction";
+            menuItem -l "Multiplication";
+            menuItem -l "Division";
+            menuItem -l "Exponent";
+            menuItem -l "Mean";
+            menuItem -l "Median";
         optionVar -stringValue "visualList" `textScrollList -parent $firstColumn -append "Inputs:"`;
     string $numAddRow = `rowColumnLayout -p $uiWindow -numberOfRows 1`;
         optionVar -stringValue "arrayFloatNum" `floatField -p $numAddRow -width 150`;
         button -parent $numAddRow -label "Add" -width 75 -command "Add_ButtonCmd";
         button -parent $numAddRow -label "Clear" -width 75 -command "Clear_ButtonCmd";   
-        button -p $firstColumn -label "Calculate";
+        button -p $firstColumn -label "Calculate" -command "Calculate_ButtonCmd";
+        optionVar -stringValue "opResult" `textField -p $firstColumn -editable 0`;
     showWindow $uiWindow;
 }
 CalculatorUI();
-
-
-//print(floatArrayToString($array, ", ") + "\n");
-
-
-    /*string $arrayField = `optionVar -q "arrayInput"`;
-    string $opField = `optionVar -q "opInput"`;
-    string $resultField = `optionVar -q "opResult"`;
-
-    string $op = `radioButtonGrp -q -select $opField`;
-
-    string $result = CalulatorUI($array, $op);
-    textField -e -text $result $resultField*/

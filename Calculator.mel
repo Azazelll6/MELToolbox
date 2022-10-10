@@ -197,9 +197,13 @@ global proc CalculatorUI()
     string $numAddRow = `rowColumnLayout -p $uiWindow -numberOfRows 1`;
         optionVar -stringValue "arrayFloatNum" `floatField -p $numAddRow -width 150`;
         button -parent $numAddRow -label "Add" -width 75 -command "Add_ButtonCmd";
-        button -parent $numAddRow -label "Clear" -width 75 -command "Clear_ButtonCmd";   
+        button -parent $numAddRow -label "Clear" -width 75 -command "Clear_ButtonCmd";
         button -p $firstColumn -label "Calculate" -command "Calculate_ButtonCmd";
         optionVar -stringValue "opResult" `textField -p $firstColumn -editable 0`;
     showWindow $uiWindow;
 }
 CalculatorUI();
+
+//Simply run the script and add inputs. When the desired numbers for calculation are entered, select an operation from the 
+//drop down at the top of the window and hit the calculate button. Your result will appear at the bottom of the window.
+//If you would like to provide other values hit the clear button. Hitting the calculate button again will replace the previous result.

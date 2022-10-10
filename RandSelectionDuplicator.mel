@@ -1,0 +1,110 @@
+global proc SelectionRandDuplication(float $minXValue,float $minYValue,float $minZValue,float $maxXValue,float $maxYValue,float $maxZValue,int $numOfRepeats)
+{
+    string $internalArray[] = `ls -selection`;
+
+    for ($i=0; $i<$numOfRepeats; $i++)
+    {
+        for ($selection = 0; $selection< (size($internalArray)); $selection++)
+        {
+            float $randomX = `rand $minXValue $maxXValue`;
+            float $randomY = `rand $minYValue $maxYValue`;
+            float $randomZ = `rand $minZValue $maxZValue`;
+
+            select $internalArray[$selection];
+            duplicate -rr;
+            move $randomX $randomY $randomZ;
+            //print($randomX + " " + $randomY + " " + $randomZ+ "\n");
+        }
+    }
+}
+
+global proc ValueCollection_ButtonCmd()
+{
+    string $dupField = `optionVar -q "numOfDupes"`;
+    string $minXField = `optionVar -q "minXSlider"`;
+    string $minYField = `optionVar -q "minYSlider"`;
+    string $minZField = `optionVar -q "minZSlider"`;
+    string $maxXField = `optionVar -q "maxXSlider"`;
+    string $maxYField = `optionVar -q "maxYSlider"`;
+    string $maxZField = `optionVar -q "maxZSlider"`;
+    
+    $internalArray = `ls -selection`;
+    int $timesToDup = `intField -q -v $dupField`;
+    float $minX = `floatSliderGrp -q -v $minXField`;
+    float $minY = `floatSliderGrp -q -v $minYField`;
+    float $minZ = `floatSliderGrp -q -v $minZField`;
+    float $maxX = `floatSliderGrp -q -v $maxXField`;
+    float $maxY = `floatSliderGrp -q -v $maxYField`;
+    float $maxZ = `floatSliderGrp -q -v $maxZField`;
+
+    if ($minX>$maxX){
+        print("Error: MinX > MaxX\n");
+    } else if($minY>$maxY){
+        print("Error: MinY > MaxY\n");
+    } else if($minZ>$maxZ){
+        print("Error: MinZ > MaxZ\n");
+    } else{
+        print("Selection to duplicate = " + stringArrayToString($internalArray, ", ") + "\n");
+        print("Number of Duplications: " + $timesToDup + "\n");
+        print("Randomized range of\n" 
+                + "X: " + $minX + " to " + $maxX + "\n"
+                + "Y: " + $minY + " to " + $maxY + "\n"
+                + "Z: " + $minZ + " to " + $maxZ + "\n");
+
+    SelectionRandDuplication($minX,$minY,$minZ,$maxX,$maxY,$maxZ,$timesToDup);
+    }
+}
+
+global proc DuplicationUI()
+{
+    string $uiWindow = "uiWindow";
+
+    if (`window -exists $uiWindow`) deleteUI $uiWindow;
+    global string $internalArray[];
+    clear $internalArray;
+
+    $uiWindow = `window -title "Random Duplicator"
+                        -widthHeight 300 200
+                        -resizeToFitChildren 1
+                        $uiWindow`;
+    string $topColumn = `columnLayout -parent $uiWindow -adjustableColumn 1`;
+        text -l "Duplication Area Ranges" -parent $topColumn -align "center" -font "boldLabelFont";
+    string $midColumn = `rowColumnLayout -parent $uiWindow -numberOfColumns 2`;
+        optionVar -stringValue "minXSlider" `floatSliderGrp -columnWidth 1 50
+                        -l "Min X:"
+                        -field true
+                        -value -10
+                        -min -100 -max 100`;
+        optionVar -stringValue "maxXSlider" `floatSliderGrp -columnWidth 1 50
+                        -l "Max X:"
+                        -field true
+                        -value 10
+                        -min -100 -max 100`;
+        optionVar -stringValue "minYSlider" `floatSliderGrp -columnWidth 1 50
+                        -l "Min Y:"
+                        -field true
+                        -value -10
+                        -min -100 -max 100`;
+        optionVar -stringValue "maxYSlider" `floatSliderGrp -columnWidth 1 50
+                        -l "Max Y:"
+                        -field true
+                        -value 10
+                        -min -100 -max 100`;
+        optionVar -stringValue "minZSlider" `floatSliderGrp -columnWidth 1 50
+                        -l "Min Z:"
+                        -field true
+                        -value -10
+                        -min -100 -max 100`;
+        optionVar -stringValue "maxZSlider" `floatSliderGrp -columnWidth 1 50
+                        -l "Max Z:"
+                        -field true
+                        -value 10
+                        -min -100 -max 100`;
+    string $botRow = `rowColumnLayout -parent $uiWindow 
+                                    -adjustableColumn 2 
+                                    -numberOfColumns 3`;
+        text -l "Duplication Amount:" -parent $botRow -align "right";
+        optionVar -stringValue "numOfDupes" `intField -parent $botRow -width 75`;
+        button -parent $botRow -l "Duplicate Selected" -width 150 -command "ValueCollection_ButtonCmd";
+    showWindow $uiWindow;
+}DuplicationUI();

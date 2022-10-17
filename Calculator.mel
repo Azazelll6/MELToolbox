@@ -186,7 +186,7 @@ global proc CalculatorUI()
                         $uiWindow`;
     string $firstColumn = `columnLayout -parent $uiWindow -adjustableColumn 1`;
         optionVar -stringValue "opMenu" `optionMenu -label "Operation: " -parent $firstColumn -width 200`;
-            optionVar -stringValue "opAddMItem" `menuItem -l "Addition"`;
+            menuItem -l "Addition";
             menuItem -l "Subtraction";
             menuItem -l "Multiplication";
             menuItem -l "Division";
